@@ -1,82 +1,64 @@
-// const githubUsername = "TU_USUARIO_DE_GITHUB";
+/* ===== CONFIG ===== */
 const githubUsername = "brayandiazc";
 const projectContainer = document.getElementById("project-cards");
 
-// Función para truncar texto
-function truncateText(text, maxLength) {
-  return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
-}
+/* ===== UTILS ===== */
+const truncateText = (text, max) =>
+  text && text.length > max
+    ? text.slice(0, max) + "…"
+    : text || "Sin descripción";
 
-// Función para limitar los tópicos a un máximo de 4
-function limitTopics(topics) {
-  return topics
+const limitTopics = (topics = []) =>
+  topics
     .slice(0, 4)
-    .map((topic) => `<span class="tag">${topic}</span>`)
+    .map((t) => `<span class="badge text-bg-secondary me-1">${t}</span>`)
     .join("");
-}
 
-// Función para cargar repositorios propios con tópicos
+/* ===== FETCH & RENDER ===== */
 async function fetchUserRepos() {
   try {
-    // Endpoint para obtener todos los repositorios del usuario
-    const response = await fetch(
+    const res = await fetch(
       `https://api.github.com/users/${githubUsername}/repos`
     );
-    if (!response.ok) {
-      throw new Error(
-        `Error al conectar con la API de GitHub: ${response.status}`
-      );
-    }
+    if (!res.ok) throw new Error(`GitHub API ${res.status}`);
 
-    const repos = await response.json();
+    const repos = await res.json();
 
-    // Procesar repositorios
     repos.forEach((repo) => {
-      // Crear una tarjeta solo si tiene al menos un lenguaje asociado
-      if (repo.topics && repo.topics.length > 0) {
-        createProjectCard(repo);
-      }
+      // Solo si tiene al menos 1 topic (ajusta a tu gusto)
+      if (repo.topics?.length) renderProjectCard(repo);
     });
-  } catch (error) {
-    console.error("Error al cargar los repositorios:", error);
-    projectContainer.innerHTML = `<p>Error al cargar los proyectos. Por favor, inténtalo más tarde.</p>`;
+  } catch (err) {
+    console.error(err);
+    projectContainer.innerHTML =
+      '<p class="text-danger">Error al cargar los proyectos. Inténtalo más tarde.</p>';
   }
 }
 
-// Función para crear una tarjeta basada en tu diseño
-function createProjectCard(repo) {
-  const column = document.createElement("div");
-  column.className = "column is-one-third";
+function renderProjectCard(repo) {
+  const col = document.createElement("div");
+  col.className = "col-md-6 col-lg-4 mb-4";
 
-  const truncatedDescription = truncateText(
-    repo.description || "Sin descripción",
-    100
-  );
-
-  // Obtener hasta 4 tópicos
-  const limitedTopics = limitTopics(repo.topics || []);
-
-  column.innerHTML = `
-    <div class="card">
-      <header class="card-header">
-        <p class="card-header-title">${repo.name}</p>
-      </header>
-      <div class="card-content">
-        <div class="content">
-          ${truncatedDescription}
-          <div class="tags mt-4">
-            ${limitedTopics}
-          </div>
-        </div>
+  col.innerHTML = `
+    <div class="card h-100 shadow-sm">
+      <div class="card-body d-flex flex-column">
+        <h3 class="card-title h5 mb-2">${repo.name}</h3>
+        <p class="card-text flex-grow-1">${truncateText(
+          repo.description,
+          100
+        )}</p>
+        <div class="mb-3">${limitTopics(repo.topics)}</div>
+        <a href="${
+          repo.html_url
+        }" target="_blank" rel="noopener" class="btn btn-outline-primary mt-auto">
+          Ver proyecto
+        </a>
       </div>
-      <footer class="card-footer">
-        <a href="${repo.html_url}" class="card-footer-item" target="_blank">Ver proyecto</a>
-      </footer>
     </div>
   `;
 
-  projectContainer.appendChild(column);
+  projectContainer.appendChild(col);
 }
 
-// Llamar a la función para cargar repositorios
+/* ===== INIT ===== */
 fetchUserRepos();
