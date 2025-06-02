@@ -6,9 +6,9 @@ Diseñado para mostrar mi perfil profesional como **Desarrollador Full Stack** y
 
 ## 🖼️ Vista Previa
 
-| Inicio                        | Sección Proyectos       |
-| ----------------------------- | ----------------------- |
-| ![main](assets/img/main.jpeg) | ![feature](assets/img/) |
+| Inicio                        |
+| ----------------------------- |
+| ![main](assets/img/main.jpeg) |
 
 ## 🧰 Tecnologías Usadas
 
@@ -57,8 +57,6 @@ open index.html
 - Carga dinámica de proyectos desde tu cuenta de GitHub
 - Datos estructurados JSON-LD para mejorar SEO
 
----
-
 ## 🔧 ¿Cómo funciona la integración con JavaScript?
 
 La sección de proyectos destacados se genera **dinámicamente** usando JavaScript y la API pública de GitHub.
@@ -89,8 +87,6 @@ async function fetchUserRepos() {
 ```
 
 Esto automatiza la sección de proyectos sin tener que editar el HTML cada vez que agregas algo nuevo a tu GitHub. ¡Una solución limpia y moderna!
-
----
 
 ## 🛣️ Roadmap
 
